@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SyncProgress</string>
+    <string name="title_activity_progress">ProgressActivity</string>
+
+    <string name="sync_step_ready">Tap Start to\u00A0begin capture</string>
+    <string name="sync_step_initializing">Initializing</string>
+    <string name="sync_step_connecting">Connecting to\u00A0patch</string>
+    <string name="sync_step_reading">Reading patch status</string>
+    <string name="sync_step_configuring">Configuring patch</string>
+    <string name="sync_step_retrieving">Retrieving ECG\u00A0data</string>
+    <string name="sync_step_uploading">Uploading ECG\u00A0data</string>
+    <string name="sync_step_complete">SYNC COMPLETE!!</string>
+</resources>
