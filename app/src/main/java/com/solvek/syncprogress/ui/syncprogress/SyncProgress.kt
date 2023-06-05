@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-private const val GAP_ANGLE = 5f
+private const val GAP_ANGLE = 2f
 
 @Composable
 fun SyncProgress(
@@ -26,7 +26,7 @@ fun SyncProgress(
     backColor: Color,
     modifier: Modifier = Modifier,
     startAngle: Float = 270f,
-    strokeWidth: Dp = 5.dp
+    strokeWidth: Dp = 10.dp
 ){
     val stroke = with(LocalDensity.current) {
         Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Butt)
@@ -39,8 +39,18 @@ fun SyncProgress(
         modifier
             .progressSemantics(totalProgress)
             .fillMaxSize()
+//            .background(Color.Red)
     ) {
         var angle = startAngle + GAP_ANGLE / 2
+
+//        drawSyncProgressSegment(
+//            angle,
+//            50f,
+//            color,
+//            backColor,
+//            stroke,
+//            1f)
+
         for(sp: StepProgress in steps){
             val sweep = sp.weight * sweepFactor
             drawSyncProgressSegment(
@@ -63,34 +73,39 @@ private fun DrawScope.drawSyncProgressSegment(
     stroke: Stroke,
     progress: Float
 ) {
+    val width = size.width
     val diameterOffset = stroke.width / 2
-    val arcDimen = size.width - 2 * diameterOffset
-    val sweep1 = sweep * progress
-    val sweep2 = sweep - sweep1
-    val startAngle2 = startAngle + sweep1
-    rotate(degrees = -90f) {
+    val arcDimen = width - 2 * diameterOffset
+    val center = Offset(width/2, width/2)
+    val sweepPart = sweep/360f
+    val point1 = pointFun(progress, 0.05f*sweepPart)
+    val point2 = if (progress == 0f || progress == 1f){
+        progress
+    }
+    else {
+        sweepPart
+    }
+    rotate(
+        degrees = startAngle,
+        pivot = center) {
         drawArc(
             brush = Brush.sweepGradient(
                 colorStops = listOf(
-                    0.0f to color,
-                    sweep1 / 360 to backColor,
-                ).toTypedArray()
+                    0f to color,
+                    point1 to color,
+//                    point2 to backColor,
+                    1f to backColor,
+                ).toTypedArray(),
+                center = center
             ),
-            startAngle = startAngle + 90,
-            sweepAngle = sweep1,
+            startAngle = 0f,
+            sweepAngle = sweep,
             useCenter = false,
             topLeft = Offset(diameterOffset, diameterOffset),
             size = Size(arcDimen, arcDimen),
             style = stroke
         )
     }
-    drawArc(
-        color = backColor,
-        startAngle = startAngle2,
-        sweepAngle = sweep2,
-        useCenter = false,
-        topLeft = Offset(diameterOffset, diameterOffset),
-        size = Size(arcDimen, arcDimen),
-        style = stroke
-    )
 }
+
+private fun pointFun(x: Float, c: Float) = x*(2*(1-c)*x+2*c-1)
