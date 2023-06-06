@@ -9,6 +9,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -49,7 +50,8 @@ fun SyncProgress(
 //            color,
 //            backColor,
 //            stroke,
-//            1f)
+////            0.9f)
+//            steps[4].progress)
 
         for(sp: StepProgress in steps){
             val sweep = sp.weight * sweepFactor
@@ -77,27 +79,37 @@ private fun DrawScope.drawSyncProgressSegment(
     val diameterOffset = stroke.width / 2
     val arcDimen = width - 2 * diameterOffset
     val center = Offset(width/2, width/2)
-    val sweepPart = sweep/360f
-    val point1 = pointFun(progress, 0.05f*sweepPart)
-    val point2 = if (progress == 0f || progress == 1f){
-        progress
+
+    val brush = if (progress == 0f){
+        SolidColor(backColor)
+    }
+    else if (progress == 1f){
+        SolidColor(color)
     }
     else {
-        sweepPart
+        val sweepPart = sweep/360f
+        val q = 2f*progress*sweepPart
+
+        val t1 = if (progress > 0.5f) 0f else q - sweepPart
+        val t2 = if (progress > 0.5f) q else sweepPart
+
+        Brush.sweepGradient(
+            colorStops = listOf(
+                0f to color,
+                t1 to color,
+                t2 to backColor,
+                1f to backColor,
+            ).toTypedArray(),
+            center = center
+        )
     }
+
+
     rotate(
         degrees = startAngle,
         pivot = center) {
         drawArc(
-            brush = Brush.sweepGradient(
-                colorStops = listOf(
-                    0f to color,
-                    point1 to color,
-//                    point2 to backColor,
-                    1f to backColor,
-                ).toTypedArray(),
-                center = center
-            ),
+            brush = brush,
             startAngle = 0f,
             sweepAngle = sweep,
             useCenter = false,
@@ -107,5 +119,3 @@ private fun DrawScope.drawSyncProgressSegment(
         )
     }
 }
-
-private fun pointFun(x: Float, c: Float) = x*(2*(1-c)*x+2*c-1)
