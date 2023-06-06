@@ -25,7 +25,6 @@ fun SyncProgress(
     steps: List<StepProgress>,
     color: Color,
     backColor: Color,
-    backgroundCircle: Color? = null,
     modifier: Modifier = Modifier,
     startAngle: Float = 270f,
     strokeWidth: Dp = 10.dp
