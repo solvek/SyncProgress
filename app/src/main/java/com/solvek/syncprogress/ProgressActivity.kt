@@ -46,6 +46,7 @@ class ProgressActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             while(true){
+                syncViewState.value = MessageViewState(R.string.sync_step_ready, isAllComplete = false)
                 delay(TimeUnit.SECONDS.toMillis(1))
                 showStartButton.value = false
 
@@ -74,6 +75,17 @@ class ProgressActivity : ComponentActivity() {
                 syncViewState.value = MessageViewState(R.string.sync_step_complete)
                 showStartButton.value = true
                 delay(2000)
+
+                listOf(
+                    R.string.sync_fail_init,
+                    R.string.sync_fail_connection,
+                    R.string.sync_fail_reading,
+                    R.string.sync_fail_configuring,
+                    R.string.sync_fail_retrieving,
+                    R.string.sync_fail_uploading).forEach{message ->
+                    syncViewState.value = MessageViewState(message, isPositive = false)
+                    delay(1000)
+                }
             }
         }
     }

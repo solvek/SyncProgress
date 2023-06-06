@@ -10,6 +10,14 @@
     <string name="sync_step_retrieving">Retrieving ECG\u00A0data</string>
     <string name="sync_step_uploading">Uploading ECG\u00A0data</string>
     <string name="sync_step_complete">SYNC COMPLETE!!</string>
+
+    <string name="sync_fail_init">Initialization\nFAILED</string>
+    <string name="sync_fail_connection">Connection\nFAILED</string>
+    <string name="sync_fail_reading">Reading status\nFAILED</string>
+    <string name="sync_fail_configuring">Configuring\nFAILED</string>
+    <string name="sync_fail_retrieving">Retrieving ECG\nFAILED</string>
+    <string name="sync_fail_uploading">Uploading ECG\nFAILED</string>
+
     <string name="ecg_capture">ECG Capture</string>
     <string name="from_chest_patch">From Chest Patch</string>
     <string name="start">Start</string>
