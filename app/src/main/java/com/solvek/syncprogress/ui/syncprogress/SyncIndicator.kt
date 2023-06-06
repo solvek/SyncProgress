@@ -1,13 +1,17 @@
 package com.solvek.syncprogress.ui.syncprogress
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.solvek.syncprogress.R
 import com.solvek.syncprogress.ui.theme.NegativeColor
@@ -18,20 +22,31 @@ import com.solvek.syncprogress.ui.theme.PositiveColorLight
 fun SyncIndicator(syncViewState: SyncViewState) {
     Box(modifier = Modifier
         .fillMaxWidth()
-        .padding(20.dp),
+        .aspectRatio(1f),
         contentAlignment = Alignment.Center) {
 
-        when(syncViewState){
-            is MessageViewState -> SyncIndicator(
-                message = syncViewState.text,
-                color = if (syncViewState.isPositive) PositiveColor else NegativeColor,
-                allProgress = if (syncViewState.isAllComplete) 1f else 0f
-            )
-            is ProgressViewState -> SyncIndicator(
-                syncViewState.text,
-                syncViewState.progress,
-                PositiveColor,
-                PositiveColorLight)
+        Image(
+            painterResource(R.drawable.bg_sync_indicator),
+            modifier = Modifier.fillMaxSize(),
+            contentDescription="Background")
+
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(30.dp)) {
+            when (syncViewState) {
+                is MessageViewState -> SyncIndicator(
+                    message = syncViewState.text,
+                    color = if (syncViewState.isPositive) PositiveColor else NegativeColor,
+                    allProgress = if (syncViewState.isAllComplete) 1f else 0f
+                )
+
+                is ProgressViewState -> SyncIndicator(
+                    syncViewState.text,
+                    syncViewState.progress,
+                    PositiveColor,
+                    PositiveColorLight
+                )
+            }
         }
     }
 }
