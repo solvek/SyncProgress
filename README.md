@@ -1,0 +1,1 @@
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/NbpD43YDTfs/0.jpg)](https://youtube.com/shorts/NbpD43YDTfs?feature=share "Sync Progress Demo")
