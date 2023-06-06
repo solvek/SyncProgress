@@ -3,29 +3,25 @@ package com.solvek.syncprogress
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
+import com.solvek.syncprogress.ui.syncprogress.MessageViewState
 import com.solvek.syncprogress.ui.syncprogress.ProgressViewState
-import com.solvek.syncprogress.ui.syncprogress.StepProgress
-import com.solvek.syncprogress.ui.syncprogress.SyncProgress
-import com.solvek.syncprogress.ui.theme.NegativeColor
-import com.solvek.syncprogress.ui.theme.PositiveColor
-import com.solvek.syncprogress.ui.theme.PositiveColorLight
+import com.solvek.syncprogress.ui.syncprogress.SyncViewState
 import com.solvek.syncprogress.ui.theme.SyncProgressTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 class ProgressActivity : ComponentActivity() {
-//    private var progress = MutableLiveData(0f)
-//        private set
+    private val syncViewState = MutableLiveData<SyncViewState>(MessageViewState(R.string.sync_step_ready, isAllComplete = false))
+    private val showStartButton = MutableLiveData(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,30 +32,49 @@ class ProgressActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color(0xFF002171)
                 ) {
-                    //                        val p by progress.observeAsState(0f)
-                    SyncScreen(
-                        showStartButton = true,
-                        syncViewState = ProgressViewState(R.string.sync_step_retrieving, 0.25f)
-                    )
+                    val syncViewState by syncViewState.observeAsState(null)
+                    val showStartButton by showStartButton.observeAsState(false)
+                    syncViewState?.let {
+                        SyncScreen(
+                            showStartButton = showStartButton,
+                            syncViewState = it
+                        )
+                    }
                 }
             }
         }
 
-//        lifecycleScope.launch {
-//            while(true){
-//                val p = (progress.value ?: 0f) + 0.05f
-//
-//                if (p >= 0.1f){
-//                    progress.value = 1f
-//                    delay(3000)
-//                    progress.value = 0f
-//                    delay(3000)
-//                }
-//                else {
-//                    progress.value = p
-//                    delay(1000)
-//                }
-//            }
-//        }
+        lifecycleScope.launch {
+            while(true){
+                delay(TimeUnit.SECONDS.toMillis(1))
+                showStartButton.value = false
+
+                delay(2000)
+                syncViewState.value = ProgressViewState(R.string.sync_step_initializing)
+                delay(2000)
+                syncViewState.value = ProgressViewState(R.string.sync_step_connecting)
+                delay(2000)
+                syncViewState.value = ProgressViewState(R.string.sync_step_reading)
+                delay(2000)
+                syncViewState.value = ProgressViewState(R.string.sync_step_configuring)
+
+                val max = 20
+                for (i in 1.. max) {
+                    delay(500)
+                    syncViewState.value = ProgressViewState(R.string.sync_step_retrieving, progress = 1f*i/max)
+                }
+
+                syncViewState.value = ProgressViewState(R.string.sync_step_uploading, 0.2f)
+                delay(1000)
+                syncViewState.value = ProgressViewState(R.string.sync_step_uploading, 0.6f)
+                delay(1000)
+                syncViewState.value = ProgressViewState(R.string.sync_step_uploading, 0.9f)
+                delay(1000)
+
+                syncViewState.value = MessageViewState(R.string.sync_step_complete)
+                showStartButton.value = true
+                delay(2000)
+            }
+        }
     }
 }
