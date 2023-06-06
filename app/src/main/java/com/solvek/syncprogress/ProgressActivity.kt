@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.solvek.syncprogress.ui.syncprogress.ProgressViewState
 import com.solvek.syncprogress.ui.syncprogress.StepProgress
 import com.solvek.syncprogress.ui.syncprogress.SyncProgress
 import com.solvek.syncprogress.ui.theme.NegativeColor
@@ -33,22 +34,13 @@ class ProgressActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color(0xFF11307b)
+                    color = Color(0xFF002171)
                 ) {
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                        contentAlignment = Alignment.Center) {
-
-//                        val p by progress.observeAsState(0f)
-
-                        SyncProgress(
-                            R.string.sync_step_retrieving,
-                            progress = 0.6f,
-                            PositiveColor,
-                            NegativeColor
-                        )
-                    }
+                    //                        val p by progress.observeAsState(0f)
+                    SyncScreen(
+                        showStartButton = true,
+                        syncViewState = ProgressViewState(R.string.sync_step_retrieving, 0.25f)
+                    )
                 }
             }
         }
@@ -69,62 +61,5 @@ class ProgressActivity : ComponentActivity() {
 //                }
 //            }
 //        }
-    }
-}
-
-private val SYNC_STEPS = listOf(
-    R.string.sync_step_initializing,
-    R.string.sync_step_connecting,
-    R.string.sync_step_reading,
-    R.string.sync_step_configuring,
-    R.string.sync_step_retrieving,
-    R.string.sync_step_uploading,
-)
-private val SYNC_WEIGHTS = listOf(
-    10,
-    15,
-    10,
-    10,
-    40,
-    30
-)
-
-@Composable
-fun SyncProgress(@StringRes message: Int, color: Color) {
-    SyncProgress(
-        steps = SYNC_WEIGHTS.map { StepProgress(it.toFloat()) },
-        color = color,
-        backColor = color)
-}
-
-@Composable
-fun SyncProgress(@StringRes stepId: Int, progress: Float, color: Color, backColor: Color) {
-    var stepFound = false
-    val steps = SYNC_WEIGHTS.mapIndexed{idx, weight ->
-        if (SYNC_STEPS[idx] == stepId) {
-            stepFound = true
-            StepProgress(weight.toFloat(), progress)
-        }
-        else {
-            StepProgress(weight.toFloat(), if (stepFound) 0f else 1f)
-        }
-    }
-
-    SyncProgress(
-        steps,
-        color,
-        backColor)
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SyncProgressTheme {
-        SyncProgress(
-            R.string.sync_step_retrieving,
-            progress = 0.25f,
-            PositiveColor,
-            PositiveColorLight)
     }
 }

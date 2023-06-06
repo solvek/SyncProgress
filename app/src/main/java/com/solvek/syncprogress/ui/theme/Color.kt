@@ -12,4 +12,4 @@ val Pink40 = Color(0xFF7D5260)
 
 val PositiveColor = Color(0xFF5cf8c0)
 val PositiveColorLight = Color(0xFF3a7eaf)
-val NegativeColor = Color(0xFF3A7EAF)
+val NegativeColor = Color(0xFFf86b74)
