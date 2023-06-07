@@ -23,7 +23,7 @@ import com.solvek.syncprogress.ui.theme.PositiveColor
 import com.solvek.syncprogress.ui.theme.PositiveColorLight
 
 @Composable
-fun SyncIndicator(syncViewState: SyncViewState) {
+fun SyncIndicator(syncState: SyncState) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .aspectRatio(1f),
@@ -34,16 +34,16 @@ fun SyncIndicator(syncViewState: SyncViewState) {
             modifier = Modifier.fillMaxSize(),
             contentDescription="Background")
 
-        when (syncViewState) {
-            is MessageViewState -> SyncIndicator(
-                message = syncViewState.text,
-                color = if (syncViewState.isPositive) PositiveColor else NegativeColor,
-                allProgress = if (syncViewState.isAllComplete) 1f else 0f
+        when (syncState) {
+            is MessageSyncState -> SyncIndicator(
+                message = syncState.text,
+                color = if (syncState.isPositive) PositiveColor else NegativeColor,
+                allProgress = if (syncState.isAllComplete) 1f else 0f
             )
 
-            is ProgressViewState -> SyncIndicator(
-                syncViewState.text,
-                syncViewState.progress,
+            is ProgressSyncState -> SyncIndicator(
+                syncState.text,
+                syncState.progress,
                 PositiveColor,
                 PositiveColorLight
             )
