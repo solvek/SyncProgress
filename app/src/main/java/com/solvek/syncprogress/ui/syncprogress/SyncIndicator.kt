@@ -51,23 +51,6 @@ fun SyncIndicator(syncState: SyncState) {
     }
 }
 
-private val SYNC_STEPS = listOf(
-    R.string.sync_step_initializing,
-    R.string.sync_step_connecting,
-    R.string.sync_step_reading,
-    R.string.sync_step_configuring,
-    R.string.sync_step_retrieving,
-    R.string.sync_step_uploading,
-)
-private val SYNC_WEIGHTS = listOf(
-    10,
-    15,
-    10,
-    10,
-    40,
-    30
-)
-
 @Composable
 private fun SyncIndicator(@StringRes message: Int, color: Color, allProgress: Float) {
     SyncIndicator(
@@ -79,20 +62,9 @@ private fun SyncIndicator(@StringRes message: Int, color: Color, allProgress: Fl
 
 @Composable
 private fun SyncIndicator(@StringRes stepId: Int, progress: Float, color: Color, backColor: Color) {
-    var stepFound = false
-    val steps = SYNC_WEIGHTS.mapIndexed{idx, weight ->
-        if (SYNC_STEPS[idx] == stepId) {
-            stepFound = true
-            StepProgress(weight.toFloat(), progress)
-        }
-        else {
-            StepProgress(weight.toFloat(), if (stepFound) 0f else 1f)
-        }
-    }
-
     SyncIndicator(
         stepId,
-        steps,
+        singleStepProgress(stepId, progress),
         color,
         backColor)
 }
