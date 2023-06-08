@@ -55,7 +55,7 @@ fun SyncIndicator(syncState: SyncState) {
 private fun SyncIndicator(@StringRes message: Int, color: Color, allProgress: Float) {
     SyncIndicator(
         message,
-        steps = SYNC_WEIGHTS.map { StepProgress(it.toFloat(), allProgress) },
+        stepsWithSameProgress(allProgress),
         color = color,
         backColor = color)
 }
@@ -64,7 +64,7 @@ private fun SyncIndicator(@StringRes message: Int, color: Color, allProgress: Fl
 private fun SyncIndicator(@StringRes stepId: Int, progress: Float, color: Color, backColor: Color) {
     SyncIndicator(
         stepId,
-        singleStepProgress(stepId, progress),
+        stepsWithOneProgress(stepId, progress),
         color,
         backColor)
 }
